@@ -1,8 +1,6 @@
 <template>
-  <Home v-if="isAuthenticated()"></Home>
-  <Landing v-else></Landing>
+  <Home></Home>
 </template>
 
 <script setup lang="ts">
-import { isAuthenticated } from "~/services/auth";
 </script>

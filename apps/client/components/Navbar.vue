@@ -24,55 +24,10 @@
               </h1>
             </div>
           </NuxtLink>
-
-          <nav
-            v-if="route.path === '/' && !isAuthenticated()"
-            aria-label="Global"
-            class="hidden md:block"
-          >
-            <ul class="flex items-center text-base">
-              <li
-                class="px-4"
-                v-for="(optItem, optIndex) in HEADER_OPTIONS"
-                :key="optIndex"
-              >
-                <a
-                  class="text-nowrap hover:text-purple-600 dark:text-white dark:hover:text-purple-400"
-                  :href="optItem.href"
-                  :target="optItem.target ?? '_self'"
-                >
-                  {{ optItem.name }}
-                </a>
-              </li>
-            </ul>
-          </nav>
         </div>
 
         <div class="flex items-center">
-          <!-- 显示用户信息 -->
-          <div
-            v-if="isAuthenticated()"
-            class="logged-in flex items-center"
-          >
-            <div
-              class="h-8 w-8 cursor-pointer overflow-hidden rounded-full bg-gray-300 transition-all hover:scale-125 hover:opacity-90 dark:bg-gray-700"
-              @click="openUserMenu"
-            >
-              <UAvatar
-                :src="userStore.user?.avatar"
-                alt="Avatar"
-              />
-            </div>
-          </div>
-          <!-- 登录/注册 -->
-          <button
-            v-else
-            aria-label="Login"
-            class="btn btn-sm mr-1 border-none bg-purple-500 text-white shadow-md hover:bg-purple-600 focus:outline-none"
-            @click="signIn()"
-          >
-            登录
-          </button>
+          <span class="text-sm text-gray-500 dark:text-gray-400">本地版</span>
         </div>
       </div>
     </div>
@@ -81,38 +36,16 @@
 
 <script setup lang="ts">
 import { useWindowScroll } from "@vueuse/core";
-import { useRuntimeConfig } from "nuxt/app";
 import { computed } from "vue";
 import { useRoute } from "vue-router";
 
-import { useUserMenu } from "~/composables/user/useUserMenu";
-import { isAuthenticated, signIn } from "~/services/auth";
-import { useUserStore } from "~/store/user";
-
-const runtimeConfig = useRuntimeConfig();
-const { openUserMenu } = useUserMenu();
-
 const route = useRoute();
-const userStore = useUserStore();
 const { y } = useWindowScroll();
 
 const SCROLL_THRESHOLD = 8;
-// https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/a#%E5%B1%9E%E6%80%A7
-interface AnchorAttributes extends Record<string, any> {
-  href: string;
-  target?: string;
-  download?: string;
-}
-const HEADER_OPTIONS: AnchorAttributes[] = [
-  { name: "文档", href: runtimeConfig.public.helpDocsURL as string, target: "_blank" },
-  { name: "功能", href: "#features" },
-  { name: "问题", href: "#faq" },
-  { name: "联系我们", href: "#contact" },
-];
 
-// TODO: 设置需要固定导航栏的页面
 const isStickyNavBar = computed(() =>
-  ["index", "User-Setting", "mastered-elements"].includes(route.name as string),
+  ["index", "mastered-elements"].includes(route.name as string),
 );
 const isScrolled = computed(() => y.value >= SCROLL_THRESHOLD);
 </script>

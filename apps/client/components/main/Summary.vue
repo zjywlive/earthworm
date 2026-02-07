@@ -59,12 +59,6 @@
       </div>
       <div className="modal-action flex flex-col sm:flex-row gap-2 justify-center sm:justify-end">
         <button
-          class="btn btn-primary w-full sm:w-auto"
-          @click="toShare"
-        >
-          生成打卡图
-        </button>
-        <button
           class="btn w-full sm:w-auto"
           @click="handleDoAgain"
         >
@@ -105,7 +99,6 @@ import { useConfetti } from "~/composables/main/confetti/useConfetti";
 import { readOneSentencePerDayAloud } from "~/composables/main/englishSound";
 import { useGameMode } from "~/composables/main/game";
 import { useLearningTimeTracker } from "~/composables/main/learningTimeTracker";
-import { useShareModal } from "~/composables/main/shareImage/share";
 import { useDailySentence, useSummary } from "~/composables/main/summary";
 import { useNavigation } from "~/composables/useNavigation";
 import { isAuthenticated, signIn } from "~/services/auth";
@@ -125,7 +118,6 @@ const { handleDoAgain } = useDoAgain();
 const { showModal, hideSummary } = useSummary();
 const { zhSentence, enSentence } = useDailySentence();
 const { confettiCanvasRef, playConfetti } = useConfetti();
-const { showShareModal } = useShareModal();
 const { updateActiveCourseMap } = useActiveCourseMap();
 const { totalMinutes, formattedMinutes } = useTotalLearningTime();
 
@@ -274,7 +266,4 @@ function useCourse() {
   };
 }
 
-const toShare = () => {
-  showShareModal();
-};
 </script>

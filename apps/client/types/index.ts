@@ -5,5 +5,4 @@ export * from "./models/course-history";
 export * from "./models/course-pack";
 export * from "./models/tool";
 export * from "./models/mastered-elements";
-export * from "./models/rank";
 export * from "./models/user-course-progress";

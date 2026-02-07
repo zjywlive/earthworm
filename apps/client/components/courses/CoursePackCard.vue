@@ -4,13 +4,20 @@
     @click="$emit('cardClick', coursePack)"
   >
     <figure class="relative aspect-video overflow-hidden">
-      <NuxtImg
+      <img
+        v-if="coursePack.cover"
         :src="coursePack.cover"
-        :placeholder="[288, 180]"
         width="288"
         height="180"
         class="inset-0 h-full w-full object-cover"
+        alt=""
       />
+      <div
+        v-else
+        class="flex h-full w-full items-center justify-center bg-gradient-to-br from-purple-500 to-indigo-600 text-3xl font-bold text-white"
+      >
+        {{ coursePack.title.charAt(0) }}
+      </div>
     </figure>
     <div class="card-body">
       <h2 class="card-title truncate">{{ coursePack.title }}</h2>

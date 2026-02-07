@@ -1,16 +1,8 @@
 <template>
-  <HttpErrorProvider>
-    <div
-      class="h-screen w-screen"
-      v-if="status === 'pending'"
-    >
-      <Loading />
-    </div>
-    <template v-else>
-      <NuxtLayout>
-        <NuxtPage />
-      </NuxtLayout>
-    </template>
+  <div>
+    <NuxtLayout>
+      <NuxtPage />
+    </NuxtLayout>
     <UModals />
     <Toaster
       :theme="darkMode === Theme.DARK ? 'dark' : 'light'"
@@ -22,28 +14,21 @@
         },
       }"
     />
-  </HttpErrorProvider>
+  </div>
 </template>
 
 <script setup lang="ts">
-import { useAsyncData } from "#imports";
 import { Toaster } from "vue-sonner";
 
-import { fetchCurrentUser } from "~/api/user";
 import { Theme, useDarkMode } from "~/composables/darkMode";
-import { isAuthenticated } from "~/services/auth";
 import { useUserStore } from "./store/user";
 
 const { initDarkMode, darkMode } = useDarkMode();
 initDarkMode();
 
+// 本地版：直接初始化用户
 const userStore = useUserStore();
-const { status } = useAsyncData("initApplication", async () => {
-  if (isAuthenticated()) {
-    const user = await fetchCurrentUser();
-    userStore.initUser(user);
-  }
-});
+userStore.initUser();
 </script>
 
 <style>

@@ -9,7 +9,10 @@
         :href="`/course-pack/${courseStore.currentCourse?.coursePackId}`"
       >
         <UTooltip text="课程列表">
-          <IconsExpand class="h-7 w-7" />
+          <UIcon
+            name="i-ph-arrows-out"
+            class="h-7 w-7"
+          />
         </UTooltip>
       </NuxtLink>
       <div
@@ -37,10 +40,7 @@
         </UTooltip>
       </div>
 
-      <div
-        v-if="isAuthenticated()"
-        @click="pauseGame"
-      >
+      <div @click="pauseGame">
         <UTooltip
           text="暂停游戏"
           :shortcuts="parseShortcut(shortcutKeys.pause)"
@@ -60,14 +60,6 @@
           />
         </UTooltip>
       </div>
-      <div @click="rankingStore.showRankModal">
-        <UTooltip text="排行榜">
-          <UIcon
-            name="i-ph-ranking"
-            class="clickable-item h-6 w-6"
-          />
-        </UTooltip>
-      </div>
     </div>
 
     <MainCourseContents v-model:isOpen="isOpenCourseContents"></MainCourseContents>
@@ -77,7 +69,6 @@
     class="h-6 p-[2px]"
     :percentage="currentPercentage"
   />
-  <RankRankingBoard />
 </template>
 
 <script setup lang="ts">
@@ -92,15 +83,12 @@ import { clearQuestionInput } from "~/composables/main/question";
 import { useCourseContents } from "~/composables/main/useCourseContents";
 import { useGamePause } from "~/composables/main/useGamePause";
 import { useGameSetting } from "~/composables/main/useGameSetting";
-import { useRanking } from "~/composables/rank/rankingList";
 import { useGamePlayMode } from "~/composables/user/gamePlayMode";
 import { parseShortcut, useShortcutKeyMode } from "~/composables/user/shortcutKey";
-import { isAuthenticated } from "~/services/auth";
 import { useCourseStore } from "~/store/course";
 
 const { shortcutKeys } = useShortcutKeyMode();
 const { isDictationMode } = useGamePlayMode();
-const rankingStore = useRanking();
 const courseStore = useCourseStore();
 const { focusInput } = useQuestionInput();
 const { openCourseContents } = useCourseContents();
@@ -153,7 +141,6 @@ function useDoAgain() {
     clearQuestionInput();
     showQuestion();
     courseTimer.reset();
-    // dialog 关闭后 自动聚焦 因为关闭有个 200 毫秒的动画 所以需要延迟聚焦 input
     setTimeout(() => {
       focusInput();
     }, 300);

@@ -1,46 +1,33 @@
-import { useLogto } from "@logto/vue";
-import { useRuntimeConfig } from "nuxt/app";
+// 本地版认证 stub - 始终认为用户已登录
 
-let logto: ReturnType<typeof useLogto>;
-let runtimeConfig: ReturnType<typeof useRuntimeConfig>;
 export async function setupAuth() {
-  logto = useLogto();
-  runtimeConfig = useRuntimeConfig();
+  // no-op
 }
 
-export async function signIn(callback?: string) {
-  callback && setSignInCallback(callback);
-  logto.signIn(runtimeConfig.public.signInRedirectURI);
+export async function signIn(_callback?: string) {
+  // no-op
 }
 
 export function signOut() {
-  return logto.signOut(runtimeConfig.public.signOutRedirectURI);
+  // no-op
 }
 
 export function isAuthenticated() {
-  return logto.isAuthenticated.value;
+  return true;
 }
 
 export async function getToken() {
-  const accessToken = await logto.getAccessToken(runtimeConfig.public.backendEndpoint);
-
-  return accessToken;
+  return "local-token";
 }
 
 export function fetchUserInfo() {
-  return logto.fetchUserInfo();
+  return Promise.resolve({
+    sub: "local-user",
+    name: "本地用户",
+    picture: "",
+  });
 }
 
 export function getSignInCallback() {
-  let callback = sessionStorage.getItem("callback");
-  if (callback) {
-    sessionStorage.removeItem("callback");
-    return callback;
-  } else {
-    return "/";
-  }
-}
-
-function setSignInCallback(callback: string) {
-  sessionStorage.setItem("callback", callback);
+  return "/";
 }

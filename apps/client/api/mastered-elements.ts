@@ -1,7 +1,6 @@
 import type { MasteredElement, MasteredElementContent } from "~/types";
-import { getHttp } from "./http";
 
-interface ElementItemApiResponse {
+export interface ElementItemApiResponse {
   content: {
     english: string;
   };
@@ -9,24 +8,50 @@ interface ElementItemApiResponse {
   id: string;
 }
 
-export async function fetchAddMasteredElement(content: MasteredElementContent) {
-  const http = getHttp();
-  return (await http<ElementItemApiResponse>(`/mastered-elements`, {
-    method: "post",
-    body: { content },
-  })) as MasteredElement;
+const MASTERED_KEY = "earthworm-mastered-elements";
+
+function loadElements(): MasteredElement[] {
+  try {
+    return JSON.parse(localStorage.getItem(MASTERED_KEY) || "[]");
+  } catch {
+    return [];
+  }
 }
 
-export async function fetchGetMasteredElements() {
-  const http = getHttp();
-  return (await http<ElementItemApiResponse[]>(`/mastered-elements`, {
-    method: "get",
-  })) as MasteredElement[];
+function saveElements(elements: MasteredElement[]) {
+  localStorage.setItem(MASTERED_KEY, JSON.stringify(elements));
 }
 
-export async function fetchRemoveMasteredElements(elementId: string) {
-  const http = getHttp();
-  return (await http<boolean>(`/mastered-elements/${elementId}`, {
-    method: "delete",
-  })) as boolean;
+let idCounter = Date.now();
+
+export async function fetchAddMasteredElement(
+  content: MasteredElementContent,
+): Promise<MasteredElement> {
+  const elements = loadElements();
+
+  // 检查是否已存在
+  const existing = elements.find(
+    (e) => e.content.english.toLowerCase() === content.english.toLowerCase(),
+  );
+  if (existing) return existing;
+
+  const newElement: MasteredElement = {
+    id: `local-${idCounter++}`,
+    content: { english: content.english },
+    masteredAt: new Date().toISOString(),
+  };
+  elements.unshift(newElement);
+  saveElements(elements);
+  return newElement;
+}
+
+export async function fetchGetMasteredElements(): Promise<MasteredElement[]> {
+  return loadElements();
+}
+
+export async function fetchRemoveMasteredElements(elementId: string): Promise<boolean> {
+  const elements = loadElements();
+  const filtered = elements.filter((e) => e.id !== elementId);
+  saveElements(filtered);
+  return true;
 }
